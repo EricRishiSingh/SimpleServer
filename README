@@ -1,0 +1,69 @@
+INTRODUCTION
+----------------------------------------------------------------------------
+
+The C# multithreaded server application listens on tcp port 55555 and accepts 
+client connections. 
+The server will keep track of successful handshakes and the number of active 
+connections.
+
+Valid commands and responses to the client
+  - HELO - HI
+  - COUNT - Integer representing count of successful handshakes
+  - CONNECTIONS - Integer representing the current connections to the server
+  - PRIME - returns a randomly generated prime number
+  - TERMINATE - BYE
+  
+Commands must be terminated with a newline. The application can interact with 
+a telnet client such as PuTTY.
+
+REQUIREMENTS
+----------------------------------------------------------------------------
+- This server requires .NET framework 4.5.2
+- PuTTY can be used as the Telnet client.
+
+
+INSTALLATION
+----------------------------------------------------------------------------
+This server is designed to run on a Windows machine.
+
+
+CONFIGURATION
+----------------------------------------------------------------------------
+The server has no menu or modifiable settings.
+
+
+TECHNICAL CHOICE
+----------------------------------------------------------------------------
+- I chose to use the built-in TCP functionality in .NET to build the server. 
+- There are third party libraries that could have been used but for this simple 
+  application, the .NET Sockets class was adequate
+
+DESIGN DECISIONS
+----------------------------------------------------------------------------
+- I'm currently generating prime numbers once in an array at the start to increase performance. 
+  The server just has to grab a random element when the PRIME command is received.
+- Created library project to make the code more modular and manageable. The HandleClient class
+  can be easily switched out for another class in the future.
+- Each client runs on it own thread in the HandleClient class. Can easily add additional 
+  functionality to the clients in the future.
+- Concurrent dictionary used to manage all of the active clients. It is thread safe and 
+  can be used to indicate additional information in the future.
+- The server is able to detect if a client loses connection and can remove 
+  it from the managed clients and properly dispose of it.
+- The methods in the HandleClient class are modular and can be overriden in the 
+  future.
+- All responses are logged on the server side. Can add logging functionality in the future
+  to make this configurable.
+- Added cancellation token to stop/disconnect the server. 
+- The unit tests are able to test the core functionality.
+
+
+IMPROVEMENTS
+----------------------------------------------------------------------------
+- Introduce security. Possibly use SSL encryption.
+- Validate the size of the message received and block malicious messages.
+- Add a way to configure the Port and IPAddress so its not hardcoded.
+- I could improve the server by making the number of random prime numbers available 
+  in the list configurable
+- Ability to turn logging on or off and have different levels of logging (Info, Detail, Verbose)
+- Limit the number of client connections. Make this configurable.
