@@ -141,26 +141,19 @@ namespace Bio.Library
             switch (receivedData)
             {
                 case ClientMessageConstants.Count:
-                    var count = Clients.Values.Count(i => i.Handshake).ToString();
-                    SendData(count);
-                    Console.WriteLine(count);
+                    SendData(Clients.Values.Count(i => i.Handshake).ToString());
                     break;
 
                 case ClientMessageConstants.Connections:
-                    var connections = Clients.Count.ToString();
-                    SendData(connections);
-                    Console.WriteLine(connections);
+                    SendData(Clients.Count.ToString());
                     break;
 
                 case ClientMessageConstants.Prime:
-                    var primeNumber = PrimeNumber.GetRandomPrimeNumber().ToString();
-                    SendData(primeNumber);
-                    Console.WriteLine(primeNumber);
+                    SendData(PrimeNumber.GetRandomPrimeNumber().ToString());
                     break;
 
                 case ClientMessageConstants.Terminate:
                     SendData("BYE");
-                    Console.WriteLine($"BYE Client {Identifier}");
                     RemoveAndCleanupClient();
                     break;
                 default:
@@ -178,6 +171,7 @@ namespace Bio.Library
         {
             var bytes = Encoding.ASCII.GetBytes(data);
             Client.GetStream().Write(bytes, 0, bytes.Length);
+            Console.WriteLine(data);
         }
 
         /// <summary>
@@ -203,7 +197,9 @@ namespace Bio.Library
         protected virtual void RemoveAndCleanupClient()
         {
             // Remove this client
-            Clients.TryRemove(Identifier, out var client);
+            // The TryRemove can be one line in C# 6.0
+            HandleClient client = null;
+            Clients.TryRemove(Identifier, out client);
             Client.Close();
         }
 
