@@ -67,3 +67,4 @@ IMPROVEMENTS
   in the list configurable
 - Ability to turn logging on or off and have different levels of logging (Info, Detail, Verbose)
 - Limit the number of client connections. Make this configurable.
+- Use Sieve of Eratosthenes algorithm to generate prime numbers.
